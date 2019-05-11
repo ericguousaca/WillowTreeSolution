@@ -1,0 +1,197 @@
+﻿
+@{
+    ViewBag.Title = "Willow Tree Face Game";
+}
+
+<div class="container-fluid" style="padding-top:20px;">
+    <div class="col-md-10 col-md-offset-1">
+        <div class="well">
+            <div class="row">
+                <div class="col-md-6">
+                    <input type="button" id="btnLoadGame" class="btn btn-primary" value="Load/Reflesh Game" />
+                </div>
+                <div class="col-md-6">
+                    Total attempts:<span id="spanTotalAttempt"></span>&nbsp;&nbsp;Total Success:<span id="spanTotalSuccess"></span>
+                </div>
+            </div>
+            <div id="divError" class="alert alert-danger collapse">
+                <a id="linkClose" class="close" href="#">&times;</a>
+                <div id="diverrorText"></div>
+            </div>
+        </div>
+        <div id="divGame">
+
+        </div>
+        <div class="modal fade" tabindex="-1" id="errorModal" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            &times;
+                        </button>
+                        <h4>Token Session Expired</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h3>Please close this message to login again!</h3>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" data-dismiss="modal" class="btn btn-default ">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+
+    <script type="text/javascript">
+        if (sessionStorage.getItem("accessToken") == null) {
+            window.location = "/AccountManage/Login";
+        }
+
+        $('#divGame').html("");
+        var itemCount = 6;
+        var totalAttempt = 0;
+        var totalSuccess = 0;
+
+        $('#spanTotalAttempt').html('<b>' + totalAttempt + '</b>');
+        $('#spanTotalSuccess').html('<b>' + totalSuccess + '/' + itemCount + '</b>');
+
+        function checkName(index) {
+            var employeeIdDiv = $('#divEmployeeIdE_' + index);
+            var selectNameSelect = $("#selectNameE_" + index);
+            var checkNameBtn = $("#btnCheckE_" + index);
+            var checkResultTd = $('#tdCheckResultE_' + index);
+
+            var employeeId = employeeIdDiv.text();
+            var selectedName = selectNameSelect.val();
+
+            if (selectedName == '') {
+                checkResultTd.removeClass("success");
+                checkResultTd.addClass("danger");
+                checkResultTd.html('<b>Please select a Name!</b>');
+            }
+            else {
+                //alert(employeeId + " " + selectedName);
+                totalAttempt++;
+
+                $.ajax({
+                    url: '/api/EmployeeData/CheckEmployeeName',
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken'),
+                    },
+                    data: {
+                        "NameToCheck": selectedName,
+                        "EmployeeId": employeeId
+                    },
+                    success: function () {
+                        totalSuccess++;
+                        checkResultTd.removeClass("danger");
+                        checkResultTd.addClass("success");
+                        checkResultTd.html('<b>Correct!</b>');
+                        checkNameBtn.prop("disabled", true);
+                        selectNameSelect.prop("disabled", true);
+
+                        $('#spanTotalAttempt').html('<b>' + totalAttempt + '</b>');
+                        $('#spanTotalSuccess').html('<b>' + totalSuccess + '/' + itemCount + '</b>');
+                    },
+                    error: function (jqXHR) {
+                        checkResultTd.removeClass("success");
+                        checkResultTd.addClass("danger");
+                        checkResultTd.html('<b>Incorrect!</b>');
+
+                        $('#spanTotalAttempt').html('<b>' + totalAttempt + '</b>');
+                        $('#spanTotalSuccess').html('<b>' + totalSuccess + '/' + itemCount + '</b>');
+                    }
+                })
+            }            
+        };
+
+        $(function () {
+            $('#linkClose').click(function () {
+                $('#divError').hide('fade');
+            });
+
+            $('#btnLoadGame').click(function () {
+                $.ajax({
+                    url: '/api/EmployeeData/GetFaceGameData?itemCount=' + itemCount,
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken'),
+                    },
+                    success: function (response) {
+                        $('#divGame').html("");
+
+                        var gameItemList = response.FaceGameItemList;
+                        var distictNameList = response.DistictFullNameList;
+
+                        var optionList = '<option value="">Plese Select a Name</option>';
+                        $.each(distictNameList, function (index, name) {
+                            optionList = optionList + '<option value="' + name + '">' + name + '</option>';
+                        });
+                                               
+                        $.each(gameItemList, function (index, item) {
+                            var imgId = 'imgE_' + index;
+                            var divEmployeeId = 'divEmployeeIdE_' + index;
+                            var divEmployeeId1 = divEmployeeId;
+                            var divHintNameId = 'divHintNameE_' + index;
+                            var selectNameId = 'selectNameE_' + index;
+                            var btnCheckId = 'btnCheckE_' + index;
+                            var tdCheckResultId = 'tdCheckResultE_' + index;
+
+                            var imgUrl = item.ImgUrl;
+                            if (imgUrl == '') {
+                                imgUrl = '/Content/Images/no-image-available.jpg';
+                            }
+
+                            var row = '<div class="col-sm-6 col-md-4">'
+                                + '<table class="table table-bordered ">'
+                                + '<thead>'
+                                + '<tr>'
+                                + '<td colspan="2" class="text-center"><b>'
+                                + 'Employee #' + eval(index + 1)
+                                + '</b></td>'
+                                + '</tr>'
+                                + '</thead>'
+                                + '<tbody>'
+                                + '<tr>'
+                                + '<td colspan="2" class="text-center"><img src="' + imgUrl + '" alt="" width="250" height="250" id="' + imgId + '" />'
+                                + '<div class="hidden" id="' + divEmployeeId + '">' + item.EmployeeId + '</div>'
+                                + '<div id="' + divHintNameId + '">Hint Name: ' + item.HintFullName + '</div>'
+                                + '</td > '
+                                + '</tr>'
+                                + '<tr>'
+                                + '<td>'
+                                + 'Names: <select id="' + selectNameId + '">'
+                                + optionList
+                                + '</select>'
+                                + '</td>'
+                                + '<td><input type="button" class="btn btn-success" value="Check Name" id="' + btnCheckId + '" onclick="checkName(' + index + ');" /></td>'
+                                + '</tr>'
+                                + '<tr>'
+                                + '<td colspan="2" class="success text-center" id="' + tdCheckResultId + '">'
+                                + '&nbsp;</td>'
+                                + '</tr>'
+                                + '</tbody>'
+                                + '</table>'
+                                + '</div>';
+
+                            $('#divGame').append(row);
+                        });
+                    },
+                    error: function (jqXHR) {
+                        $('#diverrorText').text(jqXHR.responseText);
+                        $('#divError').show('fade');
+                    }
+                })
+            });
+
+
+        });
+    </script>
+}
+
