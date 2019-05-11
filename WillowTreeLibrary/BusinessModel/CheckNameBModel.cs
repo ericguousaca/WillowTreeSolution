@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace WillowTreeLibrary.BusinessModel
 {
+    //Business model used for checking the selected name with employee Id  
     public class CheckNameBModel
     {
         public string NameToCheck { get; set; }

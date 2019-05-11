@@ -25,6 +25,7 @@ namespace WillowTreeLibrary.BusinessControl
 
             ObjectCache cache = MemoryCache.Default;
 
+            //Cache the data for 10 minutes
             if (cache.Contains(cacheKey))
             {
                 list = (List<EmployeeBModel>)cache.Get(cacheKey);

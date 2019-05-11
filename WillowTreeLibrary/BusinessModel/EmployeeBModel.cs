@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace WillowTreeLibrary.BusinessModel
 {
+    //Business Model that reprsent the employee data from Willow Tree Data Api
     public class EmployeeBModel
     {
     //    {

@@ -13,6 +13,7 @@ using WillowTreeLibrary.CommonUtils;
 namespace WillowTreeWebApiProject.Controllers
 {
     [Authorize]
+    //Catch unhandled exception by using the custom filter
     [WillowTreeExceptionFilter]
     [RoutePrefix("api/EmployeeData")]
     public class EmployeeDataController : ApiController
@@ -135,12 +136,6 @@ namespace WillowTreeWebApiProject.Controllers
                 return Ok(emp);
             }
         }
-
-
-
-
-        protected override void Dispose(bool disposing)
-        {
-        }
+       
     }
 }

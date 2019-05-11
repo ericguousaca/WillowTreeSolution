@@ -9,6 +9,7 @@ using System.Web.Http.Filters;
 
 namespace WillowTreeLibrary.CommonUtils
 {
+    //Custom Exception filter that can be used to catch unhandled exception for API control/method
     public class WillowTreeExceptionFilter : ExceptionFilterAttribute
     {
         public override void OnException(HttpActionExecutedContext actionExecutedContext)

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace WillowTreeLibrary.BusinessModel
 {
+    //Game model that only include the necessary for face game
     public class FaceGameBModel
     {
         public List<FaceGameItemBModel> FaceGameItemList { get; set; }

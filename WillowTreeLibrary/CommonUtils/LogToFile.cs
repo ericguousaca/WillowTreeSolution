@@ -7,6 +7,7 @@ using System.IO;
 
 namespace WillowTreeLibrary.CommonUtils
 {
+    //Can log information/eception message to txt file located in the project root folder
     public class LogToFile : ILog
     {        
         private string logFilePath = string.Format(@"{0}\{1}", AppDomain.CurrentDomain.BaseDirectory, "WillowTreeAppLog.txt");

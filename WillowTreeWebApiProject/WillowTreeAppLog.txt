@@ -3,3 +3,12 @@ Exception 5/11/2019 2:51:49 PM
 Response status code does not indicate success: 404 (Not Found).
 
 
+---------------------------
+Exception 5/11/2019 3:34:08 PM
+Response status code does not indicate success: 404 (Not Found).
+
+
+---------------------------
+Information 5/11/2019 4:11:55 PM
+Could not find Employee with Id = 6A18REzQJOiskCYQgaMYQa1!
+
