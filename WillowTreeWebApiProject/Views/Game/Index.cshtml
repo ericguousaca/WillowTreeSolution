@@ -60,6 +60,7 @@
         $('#spanTotalAttempt').html('<b>' + totalAttempt + '</b>');
         $('#spanTotalSuccess').html('<b>' + totalSuccess + '/' + itemCount + '</b>');
 
+        //Check the selected name with the employee Id by calling the CheckEmployeeName Api
         function checkName(index) {
             var employeeIdDiv = $('#divEmployeeIdE_' + index);
             var selectNameSelect = $("#selectNameE_" + index);
@@ -116,6 +117,7 @@
                 $('#divError').hide('fade');
             });
 
+            //Load the game from API and show in page
             $('#btnLoadGame').click(function () {
                 $.ajax({
                     url: '/api/EmployeeData/GetFaceGameData?itemCount=' + itemCount,
@@ -129,11 +131,13 @@
                         var gameItemList = response.FaceGameItemList;
                         var distictNameList = response.DistictFullNameList;
 
+                        //Get all distinct name and put into option list
                         var optionList = '<option value="">Plese Select a Name</option>';
                         $.each(distictNameList, function (index, name) {
                             optionList = optionList + '<option value="' + name + '">' + name + '</option>';
                         });
-                                               
+
+                        //Loop to show employees
                         $.each(gameItemList, function (index, item) {
                             var imgId = 'imgE_' + index;
                             var divEmployeeId = 'divEmployeeIdE_' + index;
