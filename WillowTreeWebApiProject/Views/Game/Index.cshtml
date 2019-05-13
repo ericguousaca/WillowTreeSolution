@@ -191,7 +191,12 @@
                         $('#diverrorText').text(jqXHR.responseText);
                         $('#divError').show('fade');
                     }
-                })
+                });
+
+                totalAttempt = 0;
+                totalSuccess = 0;
+                $('#spanTotalAttempt').html('<b>' + totalAttempt + '</b>');
+                $('#spanTotalSuccess').html('<b>' + totalSuccess + '/' + itemCount + '</b>');
             });
 
 
